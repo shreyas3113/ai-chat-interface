@@ -1,0 +1,622 @@
+
+class ChatInterface {
+    constructor() {
+        this.chatMessages = document.getElementById('chatMessages');
+        this.messageInput = document.getElementById('messageInput');
+        this.sendButton = document.getElementById('sendButton');
+        this.newChatButton = document.getElementById('newChatButton');
+        this.chatHistoryList = document.getElementById('chatHistoryList');
+        this.sidebarToggle = document.getElementById('sidebarToggle');
+        this.sidebar = document.querySelector('.sidebar');
+        this.botsPanel = document.getElementById('botsPanel');
+        this.botsGrid = document.getElementById('botsGrid');
+        this.botsToggle = document.getElementById('botsToggle');
+        this.compareToggle = document.getElementById('compareToggle');
+        this.compareContainer = document.getElementById('compareContainer');
+        this.compareResponses = document.getElementById('compareResponses');
+        this.chatTitle = document.getElementById('chatTitle');
+        this.carouselTrack = document.getElementById('carouselTrack');
+        this.carouselPrev = document.getElementById('carouselPrev');
+        this.carouselNext = document.getElementById('carouselNext');
+        
+        this.currentChatId = null;
+        this.chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+        this.selectedBots = ['gpt-4'];
+        this.compareMode = false;
+        this.messages = [];
+
+        this.aiModels = {
+            'gpt-4': {
+                name: 'GPT-4',
+                icon: '🤖',
+                description: 'Advanced reasoning and analysis',
+                responses: [
+                    "That's an excellent question! Based on my advanced reasoning capabilities, I would suggest considering multiple factors and approaches to this problem.",
+                    "I understand your concern. Let me provide a comprehensive analysis of this topic with detailed explanations and potential solutions.",
+                    "Great point! Here's my detailed perspective on this matter, considering various angles and implications.",
+                    "I'd be happy to help you with that. From my extensive knowledge base, I can offer several insights and recommendations.",
+                    "Interesting! This reminds me of several related concepts I can explain, including best practices and common pitfalls to avoid."
+                ]
+            },
+            'claude': {
+                name: 'Claude',
+                icon: '🧠',
+                description: 'Helpful and balanced responses',
+                responses: [
+                    "I appreciate you asking! I aim to be helpful while being thoughtful about this topic...",
+                    "That's a thoughtful question. I'll try to give you a balanced perspective...",
+                    "I'm happy to help! Let me think through this carefully...",
+                    "Thanks for bringing this up. I want to make sure I address your question thoroughly...",
+                    "I find this topic quite interesting. Here's how I would approach it..."
+                ]
+            },
+            'gemini': {
+                name: 'Gemini',
+                icon: '✨',
+                description: 'Creative and innovative thinking',
+                responses: [
+                    "What a fascinating question! Let me explore some creative angles on this...",
+                    "Oh, this opens up so many interesting possibilities! Consider this perspective...",
+                    "I love questions like this! Here's a creative way to think about it...",
+                    "That's inspiring! I can see multiple innovative approaches to this...",
+                    "Brilliant question! Let me share some creative insights that might surprise you..."
+                ]
+            },
+            'perplexity': {
+                name: 'Perplexity',
+                icon: '🔍',
+                description: 'Research and fact-checking expert',
+                responses: [
+                    "Based on my research capabilities, here's what I found about your question...",
+                    "Let me search for the most up-to-date information on this topic...",
+                    "I've analyzed multiple sources and here's a comprehensive answer...",
+                    "According to recent studies and reliable sources...",
+                    "Here are the key facts and insights I've gathered for you..."
+                ]
+            },
+            'copilot': {
+                name: 'Copilot',
+                icon: '👨‍💻',
+                description: 'Code generation and programming help',
+                responses: [
+                    "Let me help you with that code! Here's a solution...",
+                    "I can assist with programming. Here's how I'd approach this...",
+                    "Great coding question! Let me break this down step by step...",
+                    "I'll provide you with clean, efficient code for this task...",
+                    "Here's a programming solution with explanations..."
+                ]
+            },
+            'bard': {
+                name: 'Bard',
+                icon: '🎭',
+                description: 'Creative writing and storytelling',
+                responses: [
+                    "What an inspiring prompt! Let me craft something creative for you...",
+                    "I love creative challenges! Here's my artistic take on this...",
+                    "Let me weave together words and ideas in an engaging way...",
+                    "Time for some creative storytelling! Here's what I envision...",
+                    "I'll help you explore the creative possibilities of this idea..."
+                ]
+            },
+            'llama': {
+                name: 'LLaMA',
+                icon: '🦙',
+                description: 'Open-source language model',
+                responses: [
+                    "As an open-source model, I'm here to provide helpful responses...",
+                    "I'll give you a straightforward and informative answer...",
+                    "Let me provide you with a well-structured response...",
+                    "Here's my analysis based on open-source principles...",
+                    "I'm designed to be helpful and transparent in my responses..."
+                ]
+            },
+            'mistral': {
+                name: 'Mistral',
+                icon: '🌪️',
+                description: 'Fast and efficient responses',
+                responses: [
+                    "Quick and efficient answer coming up!",
+                    "Let me provide a fast, focused response to your question...",
+                    "Here's a direct and efficient solution...",
+                    "I'll give you a streamlined answer that gets to the point...",
+                    "Fast processing complete! Here's what you need to know..."
+                ]
+            }
+        };
+
+        this.initializeEventListeners();
+        this.initializeCarousel();
+        this.renderChatHistory();
+        this.startNewChat();
+    }
+
+    initializeEventListeners() {
+        if (this.sendButton) {
+            this.sendButton.addEventListener('click', () => this.sendMessage());
+        }
+        if (this.messageInput) {
+            this.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.sendMessage();
+                }
+            });
+        }
+
+        if (this.newChatButton) {
+            this.newChatButton.addEventListener('click', () => this.startNewChat());
+        }
+        if (this.sidebarToggle) {
+            this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
+        }
+        if (this.botsToggle) {
+            this.botsToggle.addEventListener('click', () => this.toggleBotsPanel());
+        }
+        if (this.compareToggle) {
+            this.compareToggle.addEventListener('click', () => this.toggleCompareMode());
+        }
+
+        // Bot selection
+        if (this.botsGrid) {
+            this.botsGrid.addEventListener('click', (e) => {
+                const botCard = e.target.closest('.bot-card');
+                if (botCard) {
+                    this.toggleBotSelection(botCard.dataset.bot);
+                }
+            });
+        }
+
+        // Close bots panel
+        const closeBots = document.querySelector('.close-bots');
+        if (closeBots) {
+            closeBots.addEventListener('click', () => {
+                if (this.botsPanel) this.botsPanel.classList.remove('active');
+                if (this.botsToggle) this.botsToggle.classList.remove('active');
+            });
+        }
+
+        // Carousel navigation
+        if (this.carouselPrev) {
+            this.carouselPrev.addEventListener('click', () => this.scrollCarousel('prev'));
+        }
+        if (this.carouselNext) {
+            this.carouselNext.addEventListener('click', () => this.scrollCarousel('next'));
+        }
+
+        // Carousel bot selection
+        if (this.carouselTrack) {
+            this.carouselTrack.addEventListener('click', (e) => {
+                const botCard = e.target.closest('.carousel-bot-card');
+                if (botCard) {
+                    this.toggleBotSelection(botCard.dataset.bot);
+                    this.updateCarouselSelection();
+                }
+            });
+        }
+
+        // Click outside to close panels
+        document.addEventListener('click', (e) => {
+            if (this.botsPanel && this.botsToggle && 
+                !this.botsPanel.contains(e.target) && !this.botsToggle.contains(e.target)) {
+                this.botsPanel.classList.remove('active');
+                this.botsToggle.classList.remove('active');
+            }
+        });
+    }
+
+    toggleSidebar() {
+        if (this.sidebar) {
+            this.sidebar.classList.toggle('active');
+        }
+    }
+
+    toggleBotsPanel() {
+        if (this.botsPanel) {
+            this.botsPanel.classList.toggle('active');
+        }
+        if (this.botsToggle) {
+            this.botsToggle.classList.toggle('active');
+        }
+    }
+
+    toggleCompareMode() {
+        this.compareMode = !this.compareMode;
+        if (this.compareToggle) {
+            this.compareToggle.classList.toggle('active', this.compareMode);
+        }
+        if (this.compareContainer) {
+            this.compareContainer.classList.toggle('active', this.compareMode);
+        }
+        
+        if (this.compareMode && this.selectedBots.length < 2) {
+            this.selectedBots = ['gpt-4', 'claude'];
+            this.updateBotSelection();
+        }
+    }
+
+    toggleBotSelection(botId) {
+    const isSelected = this.selectedBots.includes(botId);
+
+    if (isSelected) {
+        // Deselect the bot
+        this.selectedBots = this.selectedBots.filter(id => id !== botId);
+    } else {
+        // Select only if fewer than 3 are already selected
+        if (this.selectedBots.length < 3) {
+            this.selectedBots.push(botId);
+        } else {
+            alert("You can select only up to 3 AI models.");
+            return; // Stop further action
+        }
+    }
+
+    // Fallback default
+    if (this.selectedBots.length === 0) {
+        this.selectedBots = ['gpt-4'];
+    }
+
+    this.updateBotSelection();
+}
+
+
+    updateBotSelection() {
+    if (this.botsGrid) {
+        const botCards = this.botsGrid.querySelectorAll('.bot-card');
+        const limitReached = this.selectedBots.length >= 3;
+
+        botCards.forEach(card => {
+            const isSelected = this.selectedBots.includes(card.dataset.bot);
+            card.classList.toggle('selected', isSelected);
+            card.classList.toggle('disabled', limitReached && !isSelected);
+        });
+    }
+
+    this.updateCarouselSelection();
+}
+
+
+    startNewChat() {
+        this.currentChatId = 'chat_' + Date.now();
+        this.messages = [];
+        if (this.chatTitle) {
+            this.chatTitle.textContent = 'New Chat';
+        }
+        
+        if (this.chatMessages) {
+            this.chatMessages.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-content">
+                        <h2>Welcome to AI Chat Interface</h2>
+                        <p>Start a conversation with your AI assistant. Select different models or use compare mode to see responses from multiple AIs.</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (this.compareResponses) {
+            this.compareResponses.innerHTML = '';
+        }
+        if (this.messageInput) {
+            this.messageInput.focus();
+        }
+    }
+
+    sendMessage() {
+        const message = this.messageInput.value.trim();
+        if (!message) return;
+
+        // Clear welcome message if it exists
+        const welcomeMessage = this.chatMessages.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.remove();
+        }
+
+        this.addMessage(message, 'user');
+        this.messageInput.value = '';
+        this.sendButton.disabled = true;
+
+        // Update chat title if it's a new chat
+        if (this.messages.length === 1) {
+            this.chatTitle.textContent = message.substring(0, 30) + (message.length > 30 ? '...' : '');
+        }
+
+        if (this.compareMode) {
+            this.handleCompareMode(message);
+        } else {
+            this.handleSingleResponse(message);
+        }
+
+        this.saveChatHistory();
+    }
+
+    handleSingleResponse(message) {
+        this.showTypingIndicator();
+
+        setTimeout(() => {
+            this.hideTypingIndicator();
+            const response = this.generateAIResponse(message, this.selectedBots[0]);
+            this.addMessage(response, 'ai', this.selectedBots[0]);
+            this.sendButton.disabled = false;
+        }, Math.random() * 2000 + 1000);
+    }
+
+    handleCompareMode(message) {
+        this.compareResponses.innerHTML = '';
+        
+        this.selectedBots.forEach((botId, index) => {
+            const responseDiv = document.createElement('div');
+            responseDiv.className = 'compare-response';
+            responseDiv.innerHTML = `
+                <div class="compare-response-header">
+                    <div class="compare-response-icon">${this.aiModels[botId].icon}</div>
+                    <div class="compare-response-name">${this.aiModels[botId].name}</div>
+                </div>
+                <div class="compare-response-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            this.compareResponses.appendChild(responseDiv);
+
+            setTimeout(() => {
+                const response = this.generateAIResponse(message, botId);
+                responseDiv.querySelector('.compare-response-content').innerHTML = response;
+                
+                if (index === this.selectedBots.length - 1) {
+                    this.sendButton.disabled = false;
+                }
+            }, Math.random() * 2000 + 1000 + (index * 500));
+        });
+    }
+
+    addMessage(content, sender, botId = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+
+        const currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="message-content">${this.escapeHtml(content)}</div>
+                <div class="message-time">${currentTime}</div>
+            `;
+        } else {
+            const botName = botId ? this.aiModels[botId].name : 'AI Assistant';
+            const botIcon = botId ? this.aiModels[botId].icon : '🤖';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <strong>${botIcon} ${botName}:</strong> ${this.escapeHtml(content)}
+                </div>
+                <div class="message-time">${currentTime}</div>
+            `;
+        }
+
+        this.chatMessages.appendChild(messageDiv);
+        this.scrollToBottom();
+
+        // Store message
+        this.messages.push({
+            content,
+            sender,
+            botId,
+            timestamp: Date.now()
+        });
+    }
+
+    showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message ai-message';
+        typingDiv.id = 'typing-indicator';
+        typingDiv.innerHTML = `
+            <div class="message-content typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+        this.chatMessages.appendChild(typingDiv);
+        this.scrollToBottom();
+    }
+
+    hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    generateAIResponse(userMessage, botId) {
+        const model = this.aiModels[botId];
+        const lowerMessage = userMessage.toLowerCase();
+
+        // Context-aware responses
+        if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+            return `Hello! I'm ${model.name}, your AI assistant. ${model.description}. How can I help you today?`;
+        } else if (lowerMessage.includes('how are you')) {
+            return `I'm doing great, thank you for asking! As ${model.name}, I'm here and ready to assist you with any questions or tasks you might have.`;
+        } else if (lowerMessage.includes('what can you do')) {
+            return `As ${model.name}, I can help you with a wide variety of tasks. ${model.description}. What would you like to explore?`;
+        } else if (lowerMessage.includes('joke')) {
+            const jokes = {
+                'gpt-4': "Why don't scientists trust atoms? Because they make up everything! *adjusts digital glasses analytically*",
+                'claude': "I'd be happy to share a joke! Why don't scientists trust atoms? Because they make up everything! Hope that brought a smile to your face!",
+                'gemini': "Ooh, I love jokes! Here's a creative one: Why don't scientists trust atoms? Because they make up everything! *sparkles with digital creativity*"
+            };
+            return jokes[botId] || jokes['gpt-4'];
+        } else if (lowerMessage.includes('thank')) {
+            return `You're very welcome! I'm glad I could help. Feel free to ask me anything else you'd like to know!`;
+        } else {
+            // Random response from the model's response pool
+            const responses = model.responses;
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+    }
+
+    saveChatHistory() {
+        if (this.messages.length > 0) {
+            const existingChatIndex = this.chatHistory.findIndex(chat => chat.id === this.currentChatId);
+            const chatData = {
+                id: this.currentChatId,
+                title: this.chatTitle.textContent,
+                messages: this.messages,
+                lastUpdated: Date.now()
+            };
+
+            if (existingChatIndex !== -1) {
+                this.chatHistory[existingChatIndex] = chatData;
+            } else {
+                this.chatHistory.unshift(chatData);
+            }
+
+            // Keep only last 20 chats
+            this.chatHistory = this.chatHistory.slice(0, 20);
+            localStorage.setItem('chatHistory', JSON.stringify(this.chatHistory));
+            this.renderChatHistory();
+        }
+    }
+
+    renderChatHistory() {
+        this.chatHistoryList.innerHTML = '';
+        
+        this.chatHistory.forEach(chat => {
+            const chatItem = document.createElement('div');
+            chatItem.className = 'chat-history-item';
+            if (chat.id === this.currentChatId) {
+                chatItem.classList.add('active');
+            }
+
+            const lastMessage = chat.messages[chat.messages.length - 1];
+            const preview = lastMessage ? lastMessage.content.substring(0, 50) + '...' : '';
+
+            chatItem.innerHTML = `
+                <div class="chat-item-title">${chat.title}</div>
+                <div class="chat-item-preview">${preview}</div>
+            `;
+
+            chatItem.addEventListener('click', () => this.loadChat(chat));
+            this.chatHistoryList.appendChild(chatItem);
+        });
+    }
+
+    loadChat(chat) {
+        this.currentChatId = chat.id;
+        this.messages = chat.messages;
+        this.chatTitle.textContent = chat.title;
+
+        this.chatMessages.innerHTML = '';
+        this.messages.forEach(message => {
+            this.addMessageToDisplay(message);
+        });
+
+        this.renderChatHistory();
+        this.scrollToBottom();
+    }
+
+    addMessageToDisplay(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${message.sender}-message`;
+
+        const messageTime = new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        if (message.sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="message-content">${this.escapeHtml(message.content)}</div>
+                <div class="message-time">${messageTime}</div>
+            `;
+        } else {
+            const botName = message.botId ? this.aiModels[message.botId].name : 'AI Assistant';
+            const botIcon = message.botId ? this.aiModels[message.botId].icon : '🤖';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <strong>${botIcon} ${botName}:</strong> ${this.escapeHtml(message.content)}
+                </div>
+                <div class="message-time">${messageTime}</div>
+            `;
+        }
+
+        this.chatMessages.appendChild(messageDiv);
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    initializeCarousel() {
+        if (!this.carouselTrack) return;
+
+        this.carouselTrack.innerHTML = '';
+        Object.keys(this.aiModels).forEach(botId => {
+            const model = this.aiModels[botId];
+            const botCard = document.createElement('div');
+            botCard.className = 'carousel-bot-card';
+            botCard.dataset.bot = botId;
+            
+            botCard.innerHTML = `
+                <div class="carousel-bot-icon">${model.icon}</div>
+                <div class="carousel-bot-name">${model.name}</div>
+                <div class="carousel-bot-desc">${model.description.split(' ').slice(0, 3).join(' ')}...</div>
+            `;
+            
+            this.carouselTrack.appendChild(botCard);
+        });
+
+        this.updateCarouselSelection();
+    }
+
+    updateCarouselSelection() {
+        if (!this.carouselTrack) return;
+
+        const botCards = this.carouselTrack.querySelectorAll('.carousel-bot-card');
+        botCards.forEach(card => {
+            const isSelected = this.selectedBots.includes(card.dataset.bot);
+            card.classList.toggle('selected', isSelected);
+        });
+    }
+
+    scrollCarousel(direction) {
+        if (!this.carouselTrack) return;
+
+        const scrollAmount = 140; // width of card + gap
+        const currentScroll = this.carouselTrack.scrollLeft;
+        
+        if (direction === 'next') {
+            this.carouselTrack.scrollTo({
+                left: currentScroll + scrollAmount,
+                behavior: 'smooth'
+            });
+        } else {
+            this.carouselTrack.scrollTo({
+                left: currentScroll - scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    updateBotSelection() {
+        if (this.botsGrid) {
+            const botCards = this.botsGrid.querySelectorAll('.bot-card');
+            botCards.forEach(card => {
+                const isSelected = this.selectedBots.includes(card.dataset.bot);
+                card.classList.toggle('selected', isSelected);
+            });
+        }
+        this.updateCarouselSelection();
+    }
+
+    scrollToBottom() {
+        setTimeout(() => {
+            if (this.chatMessages) {
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+        }, 100);
+    }
+}
+
+// Initialize the chat interface when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new ChatInterface();
+});
