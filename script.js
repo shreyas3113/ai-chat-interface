@@ -10,6 +10,8 @@ class ChatInterface {
         this.sidebar = document.querySelector('.sidebar');
         this.botsPanel = document.getElementById('botsPanel');
         this.botsGrid = document.getElementById('botsGrid');
+
+
         this.botsToggle = document.getElementById('botsToggle');
         this.compareToggle = document.getElementById('compareToggle');
         this.compareContainer = document.getElementById('compareContainer');
@@ -25,104 +27,17 @@ class ChatInterface {
         this.compareMode = false;
         this.messages = [];
 
-        this.aiModels = {
-            'gpt-4': {
-                name: 'GPT-4',
-                icon: '🤖',
-                description: 'Advanced reasoning and analysis',
-                responses: [
-                    "That's an excellent question! Based on my advanced reasoning capabilities, I would suggest considering multiple factors and approaches to this problem.",
-                    "I understand your concern. Let me provide a comprehensive analysis of this topic with detailed explanations and potential solutions.",
-                    "Great point! Here's my detailed perspective on this matter, considering various angles and implications.",
-                    "I'd be happy to help you with that. From my extensive knowledge base, I can offer several insights and recommendations.",
-                    "Interesting! This reminds me of several related concepts I can explain, including best practices and common pitfalls to avoid."
-                ]
-            },
-            'claude': {
-                name: 'Claude',
-                icon: '🧠',
-                description: 'Helpful and balanced responses',
-                responses: [
-                    "I appreciate you asking! I aim to be helpful while being thoughtful about this topic...",
-                    "That's a thoughtful question. I'll try to give you a balanced perspective...",
-                    "I'm happy to help! Let me think through this carefully...",
-                    "Thanks for bringing this up. I want to make sure I address your question thoroughly...",
-                    "I find this topic quite interesting. Here's how I would approach it..."
-                ]
-            },
-            'gemini': {
-                name: 'Gemini',
-                icon: '✨',
-                description: 'Creative and innovative thinking',
-                responses: [
-                    "What a fascinating question! Let me explore some creative angles on this...",
-                    "Oh, this opens up so many interesting possibilities! Consider this perspective...",
-                    "I love questions like this! Here's a creative way to think about it...",
-                    "That's inspiring! I can see multiple innovative approaches to this...",
-                    "Brilliant question! Let me share some creative insights that might surprise you..."
-                ]
-            },
-            'perplexity': {
-                name: 'Perplexity',
-                icon: '🔍',
-                description: 'Research and fact-checking expert',
-                responses: [
-                    "Based on my research capabilities, here's what I found about your question...",
-                    "Let me search for the most up-to-date information on this topic...",
-                    "I've analyzed multiple sources and here's a comprehensive answer...",
-                    "According to recent studies and reliable sources...",
-                    "Here are the key facts and insights I've gathered for you..."
-                ]
-            },
-            'copilot': {
-                name: 'Copilot',
-                icon: '👨‍💻',
-                description: 'Code generation and programming help',
-                responses: [
-                    "Let me help you with that code! Here's a solution...",
-                    "I can assist with programming. Here's how I'd approach this...",
-                    "Great coding question! Let me break this down step by step...",
-                    "I'll provide you with clean, efficient code for this task...",
-                    "Here's a programming solution with explanations..."
-                ]
-            },
-            'bard': {
-                name: 'Bard',
-                icon: '🎭',
-                description: 'Creative writing and storytelling',
-                responses: [
-                    "What an inspiring prompt! Let me craft something creative for you...",
-                    "I love creative challenges! Here's my artistic take on this...",
-                    "Let me weave together words and ideas in an engaging way...",
-                    "Time for some creative storytelling! Here's what I envision...",
-                    "I'll help you explore the creative possibilities of this idea..."
-                ]
-            },
-            'llama': {
-                name: 'LLaMA',
-                icon: '🦙',
-                description: 'Open-source language model',
-                responses: [
-                    "As an open-source model, I'm here to provide helpful responses...",
-                    "I'll give you a straightforward and informative answer...",
-                    "Let me provide you with a well-structured response...",
-                    "Here's my analysis based on open-source principles...",
-                    "I'm designed to be helpful and transparent in my responses..."
-                ]
-            },
-            'mistral': {
-                name: 'Mistral',
-                icon: '🌪️',
-                description: 'Fast and efficient responses',
-                responses: [
-                    "Quick and efficient answer coming up!",
-                    "Let me provide a fast, focused response to your question...",
-                    "Here's a direct and efficient solution...",
-                    "I'll give you a streamlined answer that gets to the point...",
-                    "Fast processing complete! Here's what you need to know..."
-                ]
-            }
-        };
+       this.aiModels = {
+  "gpt-4": { name: "GPT-4", icon: "🤖", description: "Advanced reasoning and analysis" },
+  "claude": { name: "Claude", icon: "🧠", description: "Helpful and balanced responses" },
+  "gemini": { name: "Gemini", icon: "✨", description: "Creative and innovative thinking" },
+  "perplexity": { name: "Perplexity", icon: "📚", description: "Real-time web information" },
+  "copilot": { name: "Copilot", icon: "👨‍💻", description: "Your coding partner" },
+  "bard": { name: "Bard", icon: "🎤", description: "Google's creative assistant" },
+  "llama": { name: "LLaMA", icon: "🦙", description: "Meta's open model" },
+  "mistral": { name: "Mistral", icon: "🐉", description: "Lightweight performant AI" }
+};
+
 
         this.initializeEventListeners();
         this.initializeCarousel();
@@ -157,13 +72,12 @@ class ChatInterface {
 
         // Bot selection
         if (this.botsGrid) {
-            this.botsGrid.addEventListener('click', (e) => {
-                const botCard = e.target.closest('.bot-card');
-                if (botCard) {
-                    this.toggleBotSelection(botCard.dataset.bot);
-                }
-            });
-        }
+    this.botsGrid.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert("Please select models using the bottom Quick Select AI section.");
+    });
+}
+
 
         // Close bots panel
         const closeBots = document.querySelector('.close-bots');
@@ -184,13 +98,13 @@ class ChatInterface {
 
         // Carousel bot selection
         if (this.carouselTrack) {
-            this.carouselTrack.addEventListener('click', (e) => {
+          /*  this.carouselTrack.addEventListener('click', (e) => {
                 const botCard = e.target.closest('.carousel-bot-card');
                 if (botCard) {
                     this.toggleBotSelection(botCard.dataset.bot);
                     this.updateCarouselSelection();
                 }
-            });
+            });*/
         }
 
         // Click outside to close panels
@@ -258,20 +172,47 @@ class ChatInterface {
 }
 
 
-    updateBotSelection() {
-    if (this.botsGrid) {
-        const botCards = this.botsGrid.querySelectorAll('.bot-card');
-        const limitReached = this.selectedBots.length >= 3;
+   updateBotSelection() {
+    const limitReached = this.selectedBots.length >= 3;
 
-        botCards.forEach(card => {
-            const isSelected = this.selectedBots.includes(card.dataset.bot);
-            card.classList.toggle('selected', isSelected);
-            card.classList.toggle('disabled', limitReached && !isSelected);
+    // ===== TOP DROPDOWN PANEL =====
+    const botsGrid = document.getElementById('botsGrid');
+    if (botsGrid) {
+        botsGrid.innerHTML = ''; // Clear previous
+
+        this.selectedBots.forEach(botId => {
+            const model = this.aiModels[botId];
+            if (!model) return;
+
+            const card = document.createElement('div');
+            card.className = 'bot-card selected';
+            card.dataset.bot = botId;
+            card.innerHTML = `
+                <div class="bot-icon">${model.icon}</div>
+                <div class="bot-name">${model.name}</div>
+                <div class="bot-description">${model.description}</div>
+            `;
+            botsGrid.appendChild(card);
         });
+
+        // If none selected, show a default message
+        if (this.selectedBots.length === 0) {
+            botsGrid.innerHTML = `<p style="padding: 1rem; color: #999;">No AI models selected. Choose from below.</p>`;
+        }
     }
 
-    this.updateCarouselSelection();
+    // ===== BOTTOM CAROUSEL =====
+    if (this.carouselTrack) {
+        const cards = this.carouselTrack.querySelectorAll('.carousel-bot-card');
+        cards.forEach(card => {
+            const selected = this.selectedBots.includes(card.dataset.bot);
+            card.classList.toggle('selected', selected);
+            card.classList.toggle('disabled', limitReached && !selected);
+        });
+    }
 }
+
+
 
 
     startNewChat() {
@@ -546,26 +487,33 @@ class ChatInterface {
     }
 
     initializeCarousel() {
-        if (!this.carouselTrack) return;
+    if (!this.carouselTrack) return;
 
-        this.carouselTrack.innerHTML = '';
-        Object.keys(this.aiModels).forEach(botId => {
-            const model = this.aiModels[botId];
-            const botCard = document.createElement('div');
-            botCard.className = 'carousel-bot-card';
-            botCard.dataset.bot = botId;
-            
-            botCard.innerHTML = `
-                <div class="carousel-bot-icon">${model.icon}</div>
-                <div class="carousel-bot-name">${model.name}</div>
-                <div class="carousel-bot-desc">${model.description.split(' ').slice(0, 3).join(' ')}...</div>
-            `;
-            
-            this.carouselTrack.appendChild(botCard);
+    this.carouselTrack.innerHTML = '';
+
+    Object.keys(this.aiModels).forEach(botId => {
+        const model = this.aiModels[botId];
+        const botCard = document.createElement('div');
+        botCard.className = 'carousel-bot-card';
+        botCard.dataset.bot = botId;
+
+        botCard.innerHTML = `
+            <div class="carousel-bot-i  con">${model.icon}</div>
+            <div class="carousel-bot-name">${model.name}</div>
+            <div class="carousel-bot-desc">${model.description.split(' ').slice(0, 3).join(' ')}...</div>
+        `;
+
+        // ✅ Add click event listener to update selection
+        botCard.addEventListener('click', () => {
+            this.toggleBotSelection(botId);  // Update selection state
         });
 
-        this.updateCarouselSelection();
-    }
+        this.carouselTrack.appendChild(botCard);
+    });
+
+    this.updateCarouselSelection(); // Reflect initial selection (if any)
+}
+
 
     updateCarouselSelection() {
         if (!this.carouselTrack) return;
@@ -596,16 +544,45 @@ class ChatInterface {
         }
     }
 
-    updateBotSelection() {
-        if (this.botsGrid) {
-            const botCards = this.botsGrid.querySelectorAll('.bot-card');
-            botCards.forEach(card => {
-                const isSelected = this.selectedBots.includes(card.dataset.bot);
-                card.classList.toggle('selected', isSelected);
-            });
+   updateBotSelection() {
+    const limitReached = this.selectedBots.length >= 3;
+
+    // ===== TOP DROPDOWN PANEL =====
+    if (this.botsGrid) {
+        this.botsGrid.innerHTML = ''; // Clear previous
+
+        this.selectedBots.forEach(botId => {
+            const model = this.aiModels[botId];
+            if (!model) return;
+
+            const card = document.createElement('div');
+            card.className = 'bot-card selected';
+            card.dataset.bot = botId;
+            card.innerHTML = `
+                <div class="bot-icon">${model.icon}</div>
+                <div class="bot-name">${model.name}</div>
+                <div class="bot-description">${model.description}</div>
+            `;
+            this.botsGrid.appendChild(card);
+        });
+
+        // If none selected, show a default message
+        if (this.selectedBots.length === 0) {
+            this.botsGrid.innerHTML = `<p style="padding: 1rem; color: #999;">No AI models selected. Choose from below.</p>`;
         }
-        this.updateCarouselSelection();
     }
+
+    // ===== BOTTOM CAROUSEL =====
+    if (this.carouselTrack) {
+        const cards = this.carouselTrack.querySelectorAll('.carousel-bot-card');
+        cards.forEach(card => {
+            const selected = this.selectedBots.includes(card.dataset.bot);
+            card.classList.toggle('selected', selected);
+            card.classList.toggle('disabled', limitReached && !selected);
+        });
+    }
+}
+
 
     scrollToBottom() {
         setTimeout(() => {
