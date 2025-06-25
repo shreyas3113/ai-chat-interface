@@ -270,6 +270,12 @@ body {
     cursor: not-allowed;
 }
 
+.carousel-bot-card.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 
 .bot-icon {
     font-size: 2rem;
