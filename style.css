@@ -184,6 +184,11 @@ body {
     color: white;
 }
 
+.settings-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
 .chat-header h1 {
     font-size: 1.25rem;
     font-weight: 600;
@@ -196,6 +201,7 @@ body {
     align-items: center;
     gap: 0.75rem;
     position: relative;
+    left: 406px;
 }
 
 .bots-toggle,
