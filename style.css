@@ -117,8 +117,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
+    background: rgba(26, 26, 46, 0.95);
+    color: white;
     position: relative;
 }
 
@@ -126,7 +126,7 @@ body {
     padding: 1rem;
     max-width: 100%;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(26, 26, 46, 0.95);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -200,8 +200,9 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    position: relative;
-    left: 406px;
+    position: absolute;
+    left: 650px;
+    
 }
 
 .bots-toggle,
@@ -393,13 +394,13 @@ body {
 .welcome-message {
     text-align: center;
     padding: 2rem;
-    color: #666;
+    color: white;
 }
 
 .welcome-content h2 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: white;
 }
 
 .welcome-content p {
@@ -497,7 +498,7 @@ body {
 }
 
 .bot-carousel-container {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(26, 26, 46, 0.95);
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1rem;
     max-width: 1050px;
@@ -513,7 +514,7 @@ body {
 .carousel-header h3 {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #666;
+    color: white;
     margin: 0;
 }
 
@@ -543,7 +544,7 @@ body {
     flex: 0 0 auto;
     width: 120px;
     padding: 1rem;
-    background: white;
+    background: rgba(71, 71, 96, 0.95);
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.75rem;
     cursor: pointer;
@@ -571,13 +572,13 @@ body {
 .carousel-bot-name {
     font-weight: 600;
     font-size: 0.8rem;
-    color: #333;
+    color: white;
     margin-bottom: 0.25rem;
 }
 
 .carousel-bot-desc {
     font-size: 0.7rem;
-    color: #666;
+    color: white;
     line-height: 1.2;
 }
 
@@ -614,7 +615,7 @@ body {
     max-width: 1800px;
     margin: 0 auto;
     width: 100%;
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(26, 26, 46, 0.95);
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
 }
@@ -633,7 +634,7 @@ body {
     font-size: 0.95rem;
     outline: none;
     transition: all 0.3s ease;
-    background: white;
+    background: rgba(71, 71, 96, 0.95);
 }
 
 #messageInput:focus {
@@ -749,4 +750,251 @@ body {
         padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
     }
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    color: #667eea;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Light Mode styles */
+body.light-mode {
+    background: linear-gradient(135deg, #f0f0f0 0%, #f9f9f9 50%, #ffffff 100%);
+    color: #000;
+}
+
+body.light-mode .main-chat {
+    background: white;
+    color: #333;
+}
+
+body.light-mode .chat-header,
+body.light-mode .chat-input-container,
+body.light-mode .bot-carousel-container {
+    background: #fff;
+    color: #000;
+}
+
+body.light-mode .sidebar {
+    background: #e6e6e6;
+    color: #000;
+}
+
+body.light-mode .chat-history-item {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
+
+body.light-mode .bot-card,
+body.light-mode .carousel-bot-card {
+    background: #fff;
+    color: #000;
+    border-color: #ccc;
+}
+
+/*more light mode styles */
+body.light-mode {
+    background: linear-gradient(135deg, #f0f0f0 0%, #f9f9f9 50%, #ffffff 100%);
+    color: #000;
+}
+
+body.light-mode .main-chat,
+body.light-mode .chat-header,
+body.light-mode .chat-input-container,
+body.light-mode .bot-carousel-container,
+body.light-mode .compare-container {
+    background: #ffffff;
+    color: #000;
+}
+
+body.light-mode .sidebar {
+    background: #f1f1f1;
+    color: #000;
+    border-right: 1px solid #ccc;
+}
+
+body.light-mode .chat-history-header {
+    color: #555;
+}
+
+body.light-mode .chat-history-item {
+    background: #eaeaea;
+    color: #000;
+    border: 1px solid transparent;
+}
+
+body.light-mode .chat-history-item:hover {
+    background: #ddd;
+    border-color: #bbb;
+}
+
+body.light-mode .chat-history-item.active {
+    background: #d6d6ff;
+    border-color: #9999ff;
+}
+
+body.light-mode .bot-card,
+body.light-mode .carousel-bot-card {
+    background: #fff;
+    color: #000;
+    border-color: #ccc;
+}
+
+body.light-mode .bot-card:hover,
+body.light-mode .carousel-bot-card:hover {
+    background: #f1f1ff;
+    border-color: #999;
+}
+
+body.light-mode .bot-card.selected,
+body.light-mode .carousel-bot-card.selected {
+    background: #dcdcff;
+    border-color: #6666cc;
+}
+
+body.light-mode .chat-item-title,
+body.light-mode .bot-name,
+body.light-mode .compare-response-name {
+    color: #000;
+}
+
+body.light-mode .chat-item-preview,
+body.light-mode .bot-description,
+body.light-mode .compare-response-content {
+    color: #333;
+}
+
+body.light-mode .compare-response {
+    background: #fafafa;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .message-content {
+    color: #000;
+}
+
+body.light-mode .user-message .message-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+body.light-mode .ai-message .message-content {
+    background: #f1f1f1;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .typing-indicator {
+    background: #eaeaea;
+    border: 1px solid #bbb;
+}
+
+body.light-mode .typing-dot {
+    background: #666;
+}
+
+body.light-mode .theme-toggle {
+    color: #000;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode - extra fixes */
+body.light-mode .chat-input-container {
+    background: #ffffff;
+    border-top: 1px solid #ccc;
+}
+
+body.light-mode #messageInput {
+    background: #f5f5f5;
+    color: #000;
+    border: 2px solid #ccc;
+}
+
+body.light-mode #messageInput::placeholder {
+    color: #777;
+}
+
+body.light-mode .send-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+body.light-mode .sidebar .new-chat-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+body.light-mode .sidebar .new-chat-button:hover {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+body.light-mode .bot-icon,
+body.light-mode .carousel-bot-icon {
+    color: #333;
+}
+
+body.light-mode .carousel-bot-card {
+    background: #f9f9f9;
+    color: #000;
+    border: 2px solid #ccc;
+}
+
+body.light-mode .carousel-bot-card:hover {
+    background: #e9e9ff;
+    border-color: #999;
+}
+
+body.light-mode .carousel-bot-card.selected {
+    background: #dcdcff;
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+body.light-mode .carousel-btn {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+/* ========== TEXT COLOR FIXES FOR LIGHT MODE ========== */
+body.light-mode,
+body.light-mode * {
+    color: #000 !important;
+}
+
+/* Optional: Adjust muted text if needed */
+body.light-mode .chat-item-preview,
+body.light-mode .bot-description,
+body.light-mode .carousel-bot-desc,
+body.light-mode .message-time {
+    color: #444 !important;
+}
+
+/* Optional: Adjust light background cards */
+body.light-mode .bot-card,
+body.light-mode .compare-response,
+body.light-mode .carousel-bot-card {
+    background-color: #fff !important;
 }
