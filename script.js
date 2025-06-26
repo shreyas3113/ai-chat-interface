@@ -603,8 +603,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const themeToggle = document.getElementById("themeToggle");
 
     // Default to dark
-    document.body.classList.remove("light-mode");
-    themeToggle.textContent = "🌙";
+    document.body.classList.add("light-mode");
+themeToggle.textContent = "☀️";
+
 
     themeToggle.addEventListener("click", () => {
         const isLight = document.body.classList.toggle("light-mode");
