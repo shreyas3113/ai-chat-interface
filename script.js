@@ -597,3 +597,18 @@ class ChatInterface {
 document.addEventListener('DOMContentLoaded', () => {
     new ChatInterface();
 });
+
+//dark mode toggle functionality    
+document.addEventListener("DOMContentLoaded", function () {
+    const themeToggle = document.getElementById("themeToggle");
+
+    // Default to dark
+    document.body.classList.remove("light-mode");
+    themeToggle.textContent = "🌙";
+
+    themeToggle.addEventListener("click", () => {
+        const isLight = document.body.classList.toggle("light-mode");
+        themeToggle.textContent = isLight ? "☀️" : "🌙";
+    });
+});
+
