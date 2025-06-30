@@ -28,15 +28,48 @@ class ChatInterface {
         this.messages = [];
 
        this.aiModels = {
-  "gpt-4": { name: "GPT-4", icon: "🤖", description: "Advanced reasoning and analysis" },
-  "claude": { name: "Claude", icon: "🧠", description: "Helpful and balanced responses" },
-  "gemini": { name: "Gemini", icon: "✨", description: "Creative and innovative thinking" },
-  "perplexity": { name: "Perplexity", icon: "📚", description: "Real-time web information" },
-  "copilot": { name: "Copilot", icon: "👨‍💻", description: "Your coding partner" },
-  "bard": { name: "Bard", icon: "🎤", description: "Google's creative assistant" },
-  "llama": { name: "LLaMA", icon: "🦙", description: "Meta's open model" },
-  "mistral": { name: "Mistral", icon: "🐉", description: "Lightweight performant AI" }
+  "gpt-4": {
+    name: "GPT-4", icon: "🤖",
+    description: "Advanced reasoning and analysis",
+    responses: ["Sure, how can I help you?", "Let me look that up for you.", "That’s a great question!"]
+  },
+  "claude": {
+    name: "Claude", icon: "🧠",
+    description: "Helpful and balanced responses",
+    responses: ["I’d be happy to assist!", "How can I support you today?", "Let’s solve this together."]
+  },
+  "gemini": {
+    name: "Gemini", icon: "✨",
+    description: "Creative and innovative thinking",
+    responses: ["Here’s a creative take!", "Imagination is key. Let me think...", "Let’s explore that idea."]
+  },
+  "perplexity": {
+    name: "Perplexity", icon: "📚",
+    description: "Real-time web information",
+    responses: ["Here's what I found.", "Fetching info from the web...", "Let me provide the most recent data."]
+  },
+  "copilot": {
+    name: "Copilot", icon: "👨‍💻",
+    description: "Your coding partner",
+    responses: ["Let’s code it out!", "Try this snippet.", "Here’s a quick fix."]
+  },
+  "bard": {
+    name: "Bard", icon: "🎤",
+    description: "Google's creative assistant",
+    responses: ["Let’s get poetic.", "Here’s a story you might enjoy.", "Creating something special…"]
+  },
+  "llama": {
+    name: "LLaMA", icon: "🦙",
+    description: "Meta's open model",
+    responses: ["Analyzing from my knowledge base.", "That’s interesting!", "Let’s dive in."]
+  },
+  "mistral": {
+    name: "Mistral", icon: "🐉",
+    description: "Lightweight performant AI",
+    responses: ["Fast and efficient — here’s your answer.", "No delays, just solutions.", "Responding swiftly."]
+  }
 };
+
 
 
         this.initializeEventListeners();
@@ -132,20 +165,26 @@ class ChatInterface {
         }
     }
 
-    toggleCompareMode() {
-        this.compareMode = !this.compareMode;
-        if (this.compareToggle) {
-            this.compareToggle.classList.toggle('active', this.compareMode);
-        }
-        if (this.compareContainer) {
-            this.compareContainer.classList.toggle('active', this.compareMode);
-        }
-        
-        if (this.compareMode && this.selectedBots.length < 2) {
+   toggleCompareMode() {
+    this.compareMode = !this.compareMode;
+    if (this.compareToggle) {
+        this.compareToggle.classList.toggle('active', this.compareMode);
+    }
+    if (this.compareContainer) {
+        this.compareContainer.classList.toggle('active', this.compareMode);
+    }
+
+    if (this.compareMode) {
+        // ✅ Only set default if fewer than 2 selected
+        if (this.selectedBots.length < 2) {
             this.selectedBots = ['gpt-4', 'claude'];
-            this.updateBotSelection();
         }
     }
+
+    // ✅ Don't reset bot selection when compareMode is turned OFF
+    this.updateBotSelection();
+}
+
 
     toggleBotSelection(botId) {
     const isSelected = this.selectedBots.includes(botId);
@@ -269,16 +308,25 @@ class ChatInterface {
         this.saveChatHistory();
     }
 
-    handleSingleResponse(message) {
-        this.showTypingIndicator();
+   handleSingleResponse(message) {
+    this.showTypingIndicator();
 
-        setTimeout(() => {
-            this.hideTypingIndicator();
-            const response = this.generateAIResponse(message, this.selectedBots[0]);
-            this.addMessage(response, 'ai', this.selectedBots[0]);
-            this.sendButton.disabled = false;
-        }, Math.random() * 2000 + 1000);
+    const botId = this.selectedBots[0];
+    if (!botId || !this.aiModels[botId]) {
+        this.hideTypingIndicator();
+        this.addMessage("No AI model is selected to respond. Please select a bot.", 'ai');
+        this.sendButton.disabled = false;
+        return;
     }
+
+    setTimeout(() => {
+        this.hideTypingIndicator();
+        const response = this.generateAIResponse(message, botId);
+        this.addMessage(response, 'ai', botId);
+        this.sendButton.disabled = false;
+    }, Math.random() * 2000 + 1000);
+}
+
 
     handleCompareMode(message) {
         this.compareResponses.innerHTML = '';
@@ -603,9 +651,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const themeToggle = document.getElementById("themeToggle");
 
     // Default to dark
-    document.body.classList.add("light-mode");
+   document.body.classList.add("light-mode");
 themeToggle.textContent = "☀️";
-
 
     themeToggle.addEventListener("click", () => {
         const isLight = document.body.classList.toggle("light-mode");
